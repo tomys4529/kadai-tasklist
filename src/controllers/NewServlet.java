@@ -34,7 +34,7 @@ public class NewServlet extends HttpServlet {
         request.setAttribute("_token", request.getSession().getId());
 
 
-        request.setAttribute("message", new Task());
+        request.setAttribute("tasks", new Task());
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/new.jsp");
         rd.forward(request, response);

@@ -55,7 +55,6 @@ public class CreateServlet extends HttpServlet {
             if(errors.size() > 0) {
                 em.close();
 
-
                 request.setAttribute("_token", request.getSession().getId());
                 request.setAttribute("message", m);
                 request.setAttribute("errors", errors);
@@ -63,11 +62,12 @@ public class CreateServlet extends HttpServlet {
                 RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/new.jsp");
                 rd.forward(request, response);
             } else {
-
                 em.persist(m);
                 em.getTransaction().commit();
                 request.getSession().setAttribute("flush", "登録が完了しました。");
                 em.close();
+
+                response.sendRedirect(request.getContextPath() + "/index");
             }
         }
     }
