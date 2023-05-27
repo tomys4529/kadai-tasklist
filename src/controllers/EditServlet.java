@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.IOException;
 
+import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,18 +11,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Task;
+import utils.DBUtil;
 
 /**
- * Servlet implementation class NewServlet
+ * Servlet implementation class EditServlet
  */
-@WebServlet("/new")
-public class NewServlet extends HttpServlet {
+@WebServlet("/edit")
+public class EditServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public NewServlet() {
+    public EditServlet() {
         super();
 
     }
@@ -30,13 +32,18 @@ public class NewServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-     // CSRF対策
+        EntityManager em = DBUtil.createEntityManager();
+
+        Task m = em.find(Task.class, Integer.parseInt(request.getParameter("id")));
+
+        em.close();
+
+        request.setAttribute("message", m);
         request.setAttribute("_token", request.getSession().getId());
 
-        // おまじないとしてのインスタンスを生成
-        request.setAttribute("message", new Task());
+        request.getSession().setAttribute("message_id", m.getId());
 
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/new.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/edit.jsp");
         rd.forward(request, response);
-     }
+    }
 }
